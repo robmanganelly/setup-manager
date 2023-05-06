@@ -1,0 +1,42 @@
+---
+
+# to be used on:  start-setup -f webdev/2023/my-welcome-tv/some-name.yaml
+container:
+  # command can be either 'docker' or 'compose'
+  command: 'docker'
+  # this is a list of previously existent containers, if command is compose will be ignored
+  docker-name:
+    -  mariadb-box
+  # this is the absolute path to docker compose file, if command is docker will be ignored
+  # compose-path: 'path'
+
+# will point to the working dir where files are, it is an absolute path
+workdir: 'path'
+
+# this is a list of applications to open
+browser:
+  command: 'google-chrome'
+  tabs:
+    - 'htp://localhost:4200'
+    - 'htp://localhost:1337/admin'
+
+terminal:
+  command: 'konsole'
+  tabs:
+    - command: 'pnpm develop:api'
+      dir: '.' # this will be the default value, if does not appear should be taken as same as path, 
+    - command: 'pnpm develop:portal'
+      dir: './client' # it indicates to run command in path/client
+    - command: 'htop'
+
+editor:
+  command: 'code'
+  #this field is optional, if present will attach the workspace to the editor command
+  workspace: 'path/some.code-workspace'
+
+# this is a list of extra commands to run
+extras:
+  - command: 'echo "hello world"'
+    dir: '.'
+---
+

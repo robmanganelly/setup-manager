@@ -1,0 +1,63 @@
+look for the option containers:
+if not containers:
+     continue
+else:
+    look for containers.command:
+    if not containers.command:
+        raise Error('Bad Syntax: no command with option containers')
+    else if containers.command == 'docker':
+        look for the option containers.docker-name
+        if not containers.docker-name or len(containers.docker-name) == 0:
+            raise Error('Bad Syntax: no docker-name with option docker') 
+        else: 
+            for container in container.docker-name:
+                run: f"docker restart {container}" 
+    else if containers.docker-name == 'compose':
+        look for the option containers.compose-path 
+        if not containers.compose-path:
+            raise Error('Bad Syntax: no compose file with option compose')
+        else run f"docker-compose -f {compose-path} up -d" 
+    else:
+        raise Error('Bad Syntax: no docker or compose with option containers')
+
+when this is finished, look for the option terminal
+if not terminal:
+     continue
+else:
+    look for terminal.command:
+    if not terminal.command:
+    raise Error('Bad Syntax: no command with option terminal')
+    else:
+        look for terminal.tabs
+        if not terminal.tabs:
+            run f"{terminal.command}"
+        else:
+            look for the option workdir:
+            if not workdir:
+                raise Error('Bad Syntax: no workdir configured with option terminal.tabs')
+            else:
+                if terminal.command == 'konsole':
+                    rows = "\n".join([f"{len(terminal.tabs)}"] if len(terminal.tabs) < 3 else ["2", f"{len(terminal.tabs) - 2}"])
+                    paths = "\n".join([f"{"." if not tab.dir else tab.dir}" for tab in terminal.tabs])
+                    commands = "\n".join([f"{"-e \"echo 'Open'\" " if not tab.command else f"-e \"{tab.command}\""}" for tab in terminal.tabs])
+                    run f"konsole --new-tab --profile \"My setup\" --noclose --tabs-from-file <(echo -e '{rows}\n{paths}\n{commands}')"
+                else:
+                    raise Error(f'Bad Syntax: not implemented with option {terminal.command}')
+when this is finished look for the option browser
+if not browser:
+     continue
+else:
+    run f"{browser} {" ".join[f"{url}" for url in browser.tabs] if browser.tabs else ""}"
+when this is finished look for the option editor
+if not editor:
+     continue
+else:
+    run f"{editor} {f"{editor.workspace}" if editor.workspace else ""}"
+when this is finished look for the option extras
+if not extras:
+     continue
+else:
+    run: f"{extra}" for extra in extras
+
+print("setup finished")
+#
