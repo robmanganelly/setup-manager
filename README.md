@@ -9,7 +9,7 @@ So, here it is, **the Setup Manager**.
 
 ## What is it?
 
-Basically is a _bash script_, so its ideally intended for MacOS and Linux users, but there might be a few workarounds for making it work. I append [here](#can-i-run-it-on-windows) the answer gotten from Chat GPT after asking if I could execute a bash script on Windows, just check the end of this file. Feel free to collaborate and PR a Windows version of this script.
+Basically is a _bash script_, so it's ideally intended for MacOS and Linux users, but there might be a few workarounds for making it work. I append [here](#can-i-run-it-on-windows) the answer gotten from Chat GPT after asking if I could execute a bash script on Windows, just check the end of this file. Feel free to collaborate and PR a Windows version of this script.
 
 ### Running the Script
 
