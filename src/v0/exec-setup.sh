@@ -38,8 +38,15 @@ executor() {
         ;;
     esac
 
-    # Parse input yaml using parser executable, it will always return an array
-    local parsed_yaml=($($parser_context $context_executable "$input_yaml"))
+    # Parse input yaml using parser executable, it will always return a string that must be converted to array
+    local parsed_yaml="" 
+    # Set the IFS (Internal Field Separator) to a comma
+    IFS='#'
+    # Use the 'read' command with the '-a' option to create an array from the string
+    local raw_yaml=$($parser_context $context_executable "$input_yaml")
+    read -a parsed_yaml <<< $raw_yaml
+    # Restore the IFS to its original value
+    unset IFS
 
     # get variables from parsed yaml
     # local parsed_yaml_length=${#parsed_yaml[@]}

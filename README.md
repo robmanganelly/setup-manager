@@ -115,7 +115,7 @@ Tentatively, the version might be stored in a `version` field.
 ### Create a new parser
 
 If you want to create a new parser, you can do it by creating a new file in the `execs` folder, with the name `exec` and the extension of the language you want to add support for,
-the parser is just a function that receives the `yaml` file with commands. and returns an `Array` of strings with the commands to run.
+the parser is just a function that receives the `yaml` file with commands. and returns a pound (`#`) separated string with the commands to run. I decided to use the pound sign as IFS to parse the string into a Bash array, avoiding install extra packages. The script will take care of parsing the array.
 
 - `parsed_yaml_errors`: index `0`: a string, containing the errors found in the yaml file, if any. if multiple I would recommend just to return the first one. and if none, return an empty string.
 - `containers_command`: index `1`: a string containing the option to run the containers, it can be `docker` or `compose`
