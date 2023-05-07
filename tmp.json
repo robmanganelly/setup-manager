@@ -1,0 +1,31 @@
+{
+    "Orientation": "Vertical",
+    "Widgets": [
+        {
+            "Orientation": "Horizontal",
+            "Widgets": [
+                {
+                    "SessionRestoreId": 0,
+                    "Command": "echo 'Hello World';",
+                    "CurrentPath": "/home/robmanganelly/webdev/2023"
+                },
+                {
+                    "SessionRestoreId": 0
+                }
+            ]
+        },
+        {
+            "Orientation": "Horizontal",
+            "Widgets": [
+                {
+                    "SessionRestoreId": 0
+                },
+                {
+                    "SessionRestoreId": 0
+                }
+            ]
+        }
+    ]
+}
+
+

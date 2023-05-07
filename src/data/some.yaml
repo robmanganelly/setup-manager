@@ -8,7 +8,7 @@ container:
   docker-name:
     -  mariadb-box
   # this is the absolute path to docker compose file, if command is docker will be ignored
-  # compose-path: 'path'
+  compose-path: 'path'
 
 # will point to the working dir where files are, it is an absolute path
 workdir: 'path'
@@ -17,17 +17,19 @@ workdir: 'path'
 browser:
   command: 'google-chrome'
   tabs:
-    - 'htp://localhost:4200'
-    - 'htp://localhost:1337/admin'
+    - 'http://localhost:4200'
+    - 'http://localhost:1337/admin'
 
 terminal:
   command: 'konsole'
   tabs:
     - command: 'pnpm develop:api'
-      dir: '.' # this will be the default value, if does not appear should be taken as same as path, 
+      dir: '.' # this will be the default value, if does not appear should be taken as same as path,
+      title: 'api' 
     - command: 'pnpm develop:portal'
       dir: './client' # it indicates to run command in path/client
     - command: 'htop'
+    - dir: . # command default is echo "ready"
 
 editor:
   command: 'code'
@@ -38,5 +40,4 @@ editor:
 extras:
   - command: 'echo "hello world"'
     dir: '.'
----
 

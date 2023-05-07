@@ -3,11 +3,21 @@
 # do this chmod +x exec-setup
 # chmod +x exec-setup
 
+
+#function lazyrm removes a file after 10 seconds
+lazyrm() {
+    local file="$1"
+    sleep 10
+    rm "$file"
+}
+
+
+
 # Function to run the algorithm
 executor() {
     # Read input YAML file
-    local input_yaml="$1"
-    local parser="$2"
+    local parser="$1"
+    local input_yaml="$2"
 
     # Check if the file is empty
     if [ ! -s "$input_yaml" ]; then
@@ -22,15 +32,18 @@ executor() {
     case $parser in
     python)
         parser_context="python3 "
-        context_executable="exec.py"
+        null_pointer="None"
+        context_executable="./../execs/exec.py"
         ;;
     node)
         parser_context="node "
-        context_executable="exec.js"
+        null_pointer="null"
+        context_executable="./../execs/exec.js"
         ;;
     go)
         parser_context="go build "
-        context_executable="exec.go"
+        null_pointer="nil"
+        context_executable="./../execs/exec.go"
         ;;
     *)
         echo "Error: Parser not supported: $parser"
@@ -41,12 +54,17 @@ executor() {
     # Parse input yaml using parser executable, it will always return a string that must be converted to array
     local parsed_yaml="" 
     # Set the IFS (Internal Field Separator) to a comma
-    IFS='#'
+    IFS='ó'
     # Use the 'read' command with the '-a' option to create an array from the string
-    local raw_yaml=$($parser_context $context_executable "$input_yaml")
+    # local raw_yaml=$(bash -c $parser_context $context_executable "$input_yaml")
+    local raw_yaml=$(bash -c "$parser_context $context_executable $input_yaml")
+    echo '$raw_yaml: ' $raw_yaml
     read -a parsed_yaml <<< $raw_yaml
     # Restore the IFS to its original value
     unset IFS
+
+    echo length: ${#parsed_yaml[@]} #debug
+    echo ${parsed_yaml} #debug
 
     # get variables from parsed yaml
     # local parsed_yaml_length=${#parsed_yaml[@]}
@@ -66,48 +84,88 @@ executor() {
     local e_details=""
     local e_cases=0
 
-    # check if there is errors
-    if [ -n "$parsed_yaml_errors"]; then
-        echo "Error: Bad syntax: $parsed_yaml_errors"
+    # check if there is errors parsed_yaml_errors length != null pointer
+    if [ "$parsed_yaml_errors" != "$null_pointer" ]; then    
+        echo "SyntaxError: Bad syntax: $parsed_yaml_errors"
         exit 1
     fi
 
+
     # Containers
-    if [ -n "$containers_command" ]; then
+    if [ "$containers_command" != "$null_pointer" ]; then
         if [ "$containers_command" == "docker" ]; then
+            
+            echo " executing docker restart $containers_docker_name"
+
             docker restart "$containers_docker_name"
 
         elif [ "$containers_command" == "compose" ]; then
+            
+            echo " executing docker-compose -f $containers_compose_path up -d"
+
             docker-compose -f "$containers_compose_path" up -d
             
         else
-            echo "Bad Syntax: unrecognized option $containers_command"
+            echo :debug $containers_command $parsed_yaml_errors $containers_docker_name $containers_compose_path
+            echo "Error: Bad Syntax: unrecognized option $containers_command for containers"
+            echo "Usage: containers: docker|compose"
             exit 1
         fi
     fi
 
     # Terminal
-    if [ -n "$terminal_command" ]; then
+    if [ "$terminal_command" != "$null_pointer" ]; then
         if [ "$terminal_command" == "konsole" ]; then
-            konsole "$terminal_tabs"
+            if [ "$terminal_tabs" != "$null_pointer" ]; then
+
+                # Create a temporary file
+                terminal_tab_file=$(mktemp -p "$workdir" temp.XXXXXX.konsole)
+
+                # Write the string content to the temporary file
+                # echo "$terminal_tabs" >> "$terminal_tab_file"
+                echo "$terminal_tabs" | tr '\t' '\n' > "$terminal_tab_file"
+                echo "terminal_tabs"
+                echo "$terminal_tab_file"
+
+
+                # Pass the temporary file to the konsole command
+                echo launching konsole --tabs-from-file "$terminal_tab_file"
+
+                konsole --tabs-from-file $terminal_tab_file & echo 'konsole launched'
+
+                # Remove the temporary file
+                lazyrm "$terminal_tab_file"
+
+            else
+                echo launching konsole
+                konsole
+            fi
+            
         else
-            echo "Bad Syntax: not implemented with option $terminal_command"
+            echo "Bad Syntax: terminal not implemented with option $terminal_command"
             exit 1
         fi
     fi
 
     # Browser
-    if [ -n "$browser_command" ]; then
-        "$browser_command" $browser_tabs 
+    if [ "$browser_command" != "$null_pointer" ]; then
+        echo launching browser: $browser_command $browser_tabs
+        $browser_command $browser_tabs 
     fi
 
     # Editor
-    if [ -n "$editor_command" ]; then
-        "$editor_command" $editor_workspace     
+    if [ "$editor_command" != "$null_pointer" ]; then
+
+        echo launching editor: $editor_command $editor_workspace
+        if [ "$editor_workspace" != "$null_pointer" ]; then
+            $editor_command $editor_workspace
+        else
+            $editor_command     
+        fi 
     fi
 
     # Extras
-    if [ -n "$extras" ]; then
+    if [ "$extras" != "$null_pointer" ]; then
         # Set the IFS (Internal Field Separator) to a comma
         IFS=','
 
@@ -119,7 +177,8 @@ executor() {
 
         # Print the elements of the array
         for element in "${my_array[@]}"; do
-            $element &
+            echo executing extra: $element
+            $element & echo done
         done
 
     fi
@@ -147,9 +206,11 @@ while getopts "f:p:" option; do
     case $option in
     f)
         yaml_directory="$OPTARG"
+        echo "yaml_directory: $yaml_directory"
         ;;
     p)
         parser="$OPTARG"
+        echo "parser: $parser"
         ;;
     *)
         e_log
@@ -162,6 +223,7 @@ shift $((OPTIND - 1))
 # Get the filename from remaining arguments
 if [ "$#" -eq 1 ]; then
     yaml_filename="$1"
+    echo "yaml_filename: $yaml_filename"
 else
     e_log
     echo "Error: Filename is required"

@@ -68,14 +68,15 @@ workdir: "/absolute/path/to/workdir"
 browser:
   command: "google-chrome"
   tabs:
-    - "htp://localhost:4200"
-    - "htp://localhost:1337/admin"
+    - "http://localhost:4200"
+    - "http://localhost:1337/admin"
 
 terminal:
   command: "konsole"
   tabs:
     - command: "pnpm develop:api"
       dir: "." # this will be the default value, if does not appear should be taken as same as path,
+      title: 'api'
     - command: "pnpm develop:portal"
       dir: "./client" # it indicates to run command in path/client
     - command: "htop"
@@ -102,6 +103,7 @@ extras:
 - `terminal`: this section will open a new terminal window with the specified tabs. The `command` field is the command to open the terminal, and the `tabs` field is a list of tabs to open. The script will not check if the command is valid.
   - The `command` field in the tabs is the command to run in every tab opened in the terminal
   - the `dir` field is the _relative_ path to the directory where the tab will be opened and command will be executed. If the `dir` field is not present, it will be taken as the same as the `workdir` field.
+  - the `title` field is the title of the tab, if not present, it will be taken as the same as the `command` field.
 - `editor`: this section will open a new editor window with the specified workspace. The `command` field is the command to open the editor, and the `workspace` field is the path to the workspace to open. The script will not check if the command is valid.
 - `extras`: this section will run a list of extra commands. The `command` field is the command to run, and the `dir` field is the _relative_ path to the directory where the command will be executed. If the `dir` field is not present, it will be taken as the same as the `workdir` field.
 

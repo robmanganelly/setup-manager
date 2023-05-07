@@ -1,0 +1,11 @@
+# First tab: htop in the current directory
+title: htop;; command: htop
+
+# Second tab: node in  pwd
+title: node;; workdir: /home/.../setup-manager;; command: node
+
+# Third tab: pnpm develop:portal in /home/.../my-welcome-tv
+title: pnpm develop:portal;; workdir: /home/.../my-welcome-tv;; command: pnpm develop:portal
+
+# Fourth tab: no command, just a title and workdir
+title: my title;; workdir: /home/.../the-latest;; profile: Shell
