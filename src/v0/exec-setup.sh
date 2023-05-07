@@ -4,6 +4,11 @@
 # chmod +x exec-setup
 
 
+# Get the directory path of the current script
+SCRIPT_DIR=$(dirname "$0")
+echo "The script directory is: $SCRIPT_DIR"
+
+
 #function lazyrm removes a file after 10 seconds
 lazyrm() {
     local file="$1"
@@ -33,17 +38,17 @@ executor() {
     python)
         parser_context="python3 "
         null_pointer="None"
-        context_executable="./../execs/exec.py"
+        context_executable="$SCRIPT_DIR/../execs/exec.py"
         ;;
     node)
         parser_context="node "
         null_pointer="null"
-        context_executable="./../execs/exec.js"
+        context_executable="$SCRIPT_DIR/../execs/exec.js"
         ;;
     go)
         parser_context="go build "
         null_pointer="nil"
-        context_executable="./../execs/exec.go"
+        context_executable="$SCRIPT_DIR/../execs/exec.go"
         ;;
     *)
         echo "Error: Parser not supported: $parser"
