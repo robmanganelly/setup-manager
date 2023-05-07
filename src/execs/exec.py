@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+
+# TODO: optimize code.
+
 import sys
 import yaml
 # import json
@@ -7,7 +10,7 @@ import yaml
 
 def _parse(data):
 
-    twelve_pos_array = [None, None, None, None, None, None, None, None, None, None, None, None ]
+    twelve_pos_array = [None] * 12
 
     # test for errors
     if 'container' in data and data['container'] is None:
@@ -110,9 +113,9 @@ def _parse(data):
 def exec(path):
     # open file in read mode
     try:
-        file = open(path, "r")
-        content = file.read()
-        file.close()
+        with open(path, "r") as file:
+            content = file.read()
+            file.close()
 
         # parse yaml
         data = yaml.safe_load(content)
