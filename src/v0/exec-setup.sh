@@ -150,7 +150,7 @@ executor() {
     # Browser
     if [ "$browser_command" != "$null_pointer" ]; then
         echo launching browser: $browser_command $browser_tabs
-        $browser_command $browser_tabs 
+        $browser_command $browser_tabs & echo 'browser launched'
     fi
 
     # Editor
@@ -177,8 +177,8 @@ executor() {
 
         # Print the elements of the array
         for element in "${my_array[@]}"; do
-            echo executing extra: $element
-            $element & echo done
+            echo "executing extra: $element"
+            bash -c "$element" & echo done
         done
 
     fi
@@ -240,4 +240,4 @@ if [ ! -f "$yaml_path" ]; then
 fi
 
 # Call the executor function
-executor "$parser" "$yaml_path"
+executor "$parser" "$yaml_path" 
