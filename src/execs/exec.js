@@ -119,7 +119,7 @@ function _parse(data) {
   }
   //parse workdir
   twelvePosArray[4] = data["workdir"];
-  const work_dir = data["workdir"];
+  const workDir = data["workdir"];
 
   //parse browser
   if ("browser" in data) {
@@ -139,7 +139,7 @@ function _parse(data) {
       let final_tabs = "";
       for (let index in data["terminal"]["tabs"]) {
         let tab = data["terminal"]["tabs"][index];
-        let pathTo = !!tab["dir"] ? `${pathTo}/${tab["dir"].slice(2)}` : null;
+        let pathTo = !!tab["dir"] ? `${workDir}/${tab["dir"].slice(2)}` : workDir;
         let tabCommand = tab["command"] || null;
         final_tabs += `title: ${
           tab["title"] || tab["command"] || `Tab ${index}`
@@ -155,7 +155,7 @@ function _parse(data) {
   //parse editor
   if ("editor" in data) {
     twelvePosArray[9] = data["editor"]["command"];
-    if ("tabs" in data["editor"]) {
+    if ("workspace" in data["editor"]) {
       twelvePosArray[10] = data["editor"]["workspace"] ?? null;
     }
   }
@@ -165,7 +165,7 @@ function _parse(data) {
     let final_extras = "";
     for (let extra of data["extras"]) {
       let pathTo = !!extra["dir"]
-        ? `${work_dir}/${extra["dir"].slice(2)}`
+        ? `${workDir}/${extra["dir"].slice(2)}`
         : null;
       final_extras += `${!!extra["dir"] ? `cd ${pathTo}; ` : ""}${
         extra["command"]
