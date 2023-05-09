@@ -2,5 +2,5 @@
 # proto
 node_modules
 *.ts
-package.json
+package-lock.json
 playground

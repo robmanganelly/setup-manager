@@ -9,6 +9,7 @@ SCRIPT_DIR=$(dirname "$0")
 echo "The script directory is: $SCRIPT_DIR"
 
 
+
 #function lazyrm removes a file after 10 seconds
 lazyrm() {
     local file="$1"
@@ -41,7 +42,9 @@ executor() {
         context_executable="$SCRIPT_DIR/../execs/exec.py"
         ;;
     node)
-        parser_context="node "
+        required_packages="js-yaml"
+        MY_NODE=$(bash -c 'npm root -g');
+        parser_context="NODE_PATH=$MY_NODE node -r $required_packages "
         null_pointer="null"
         context_executable="$SCRIPT_DIR/../execs/exec.js"
         ;;
@@ -62,6 +65,7 @@ executor() {
     IFS='ó'
     # Use the 'read' command with the '-a' option to create an array from the string
     # local raw_yaml=$(bash -c $parser_context $context_executable "$input_yaml")
+    echo 'command to be executed '$parser_context $context_executable $input_yaml
     local raw_yaml=$(bash -c "$parser_context $context_executable $input_yaml")
     echo '$raw_yaml: ' $raw_yaml
     read -a parsed_yaml <<< $raw_yaml
@@ -85,9 +89,6 @@ executor() {
     local editor_command=${parsed_yaml[9]}
     local editor_workspace=${parsed_yaml[10]}
     local extras=${parsed_yaml[11]}
-
-    local e_details=""
-    local e_cases=0
 
     # check if there is errors parsed_yaml_errors length != null pointer
     if [ "$parsed_yaml_errors" != "$null_pointer" ]; then    
